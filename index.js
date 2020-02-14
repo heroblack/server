@@ -2,7 +2,6 @@ const express = require('express')
 const morgan = require('morgan')
 const app = express()
 
-//const server = http.createServer(app)
 
 //settings
 app.set('port', process.env.PORT || 3000)
@@ -17,6 +16,7 @@ app.use(express.json())
 //routes
 app.use(require('./routes/'))
 app.use('/api/movies',require('./routes/movies'))
+app.use('/api/users', require('./routes/users'))
 
 //starting the server
 listenApp = () => {
