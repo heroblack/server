@@ -1,0 +1,19 @@
+[
+{
+  "id" : 1, 
+  "title": "toy story",
+  "director": "James Cameron",
+  "year":"1996",
+  "rating":"8.5"
+},
+
+{
+    "id" : 2, 
+    "title": "key and keys",
+    "director": "Fabio Rojas",
+    "year":"1996",
+    "rating":"10"
+  }  
+
+]
+

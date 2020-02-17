@@ -2,10 +2,10 @@ const { Router } = require("express");
 const { userValidationRules, validate } = require("./validator.js");
 const router = Router();
 const movies = require("./movies.json");
-const _ = require("underscore");
-
+const controller = require("./controller");
+const response = require("../../network/response");
 router.get("/", validate, (req, res) => {
-  res.json(movies);
+  response.succes(req, res, movies);
 });
 
 router.post("/", userValidationRules(), (req, res) => {
