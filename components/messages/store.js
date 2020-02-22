@@ -1,35 +1,35 @@
-const db = require("mongoose");
 const Model = require("./model");
-db.promise = global.Promise;
-db.connect(
-  "mongodb+srv://hackchan:f62856far1981@cluster0-ujxvk.mongodb.net/test?retryWrites=true&w=majority",
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  }
-)
-  .then(db => console.log("Database is Connected"))
-  .catch(err => console.log(err));
-console.log("[db] Conectada con exito");
 
 function addMessage(message) {
   const myMessage = new Model(message);
-  myMessage.save();
+  return myMessage.save();
 }
 
-function getMessages(filterUser) {
-  return new Promise(async (resolve, reject) => {
-    const filter =
-      filterUser != null ? { user: new RegExp(filterUser, "i") } : {};
+getMessages = filterChat => {
+  //return new Promise(async (resolve, reject) => {
+  const filter =
+    //filterUser != null ? { user: new RegExp(filterUser, "i") } : {};
+    filterChat != null ? { chat: filterChat } : {};
+  const messages = Model.find(filter)
+    .populate("user")
+    .exec();
+  return messages;
 
-    try {
-      const messages = await Model.find(filter);
-      resolve(messages);
-    } catch (error) {
-      reject(error);
-    }
-  });
-}
+  //});
+};
+
+// async function getMessages(filterUser) {
+//   const filter =
+//     filterUser != null ? { user: new RegExp(filterUser, "i") } : {};
+
+//   try {
+//     const messages = await Model.find(filter);
+//     return messages;
+//   } catch (error) {
+//     console.log(error);
+//     return error;
+//   }
+// }
 
 function updateMessage(id, message) {
   return new Promise(async (resolve, reject) => {
@@ -44,8 +44,20 @@ function updateMessage(id, message) {
   });
 }
 
+function deleteMessage(id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const deleteMessage = await Model.deleteOne({ _id: id });
+      resolve(deleteMessage);
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
 module.exports = {
   add: addMessage,
   list: getMessages,
-  updateMessage
+  updateMessage,
+  deleteMessage
 };

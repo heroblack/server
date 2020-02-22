@@ -1,33 +1,24 @@
 const store = require("./store");
+const { socket } = require("../../socket");
+function addMessage(chat, user, message, file) {
+  if (!user || !message) {
+    Promise.reject(new Error("datos incorrectos"));
+    return;
+  }
+  let fullMessage = { chat, user, message, date: new Date(), file };
+  socket.io.emit("message", fullMessage);
 
-function addMessage(user, message) {
-  return new Promise((resolve, reject) => {
-    if (!user || !message) {
-      reject("datos incorrectos");
-      return;
-    }
-
-    const fullMessage = {
-      user,
-      message,
-      date: new Date()
-    };
-    store.add(fullMessage);
-    resolve(fullMessage);
-  });
+  return store.add(fullMessage);
 }
 
-function getMessages(filterUser) {
-  return new Promise(async (resolve, reject) => {
-    const listaData = await store.list(filterUser);
-    resolve(listaData);
-  });
+function getMessages(filterChat) {
+  return store.list(filterChat);
 }
 
 function updateMessage(id, message) {
   return new Promise(async (resolve, reject) => {
     if (!id || !message) {
-      reject("Invalid Data!");
+      reject(new Error("Invalid Data!"));
       return;
     }
     try {
@@ -39,8 +30,24 @@ function updateMessage(id, message) {
   });
 }
 
+function deleteMessage(id) {
+  return new Promise(async (resolve, reject) => {
+    if (!id) {
+      reject(new Error("Invalid Data!"));
+      return;
+    }
+    try {
+      const data = await store.deleteMessage(id);
+      resolve(data);
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
 module.exports = {
   addMessage,
   getMessages,
-  updateMessage
+  updateMessage,
+  deleteMessage
 };
